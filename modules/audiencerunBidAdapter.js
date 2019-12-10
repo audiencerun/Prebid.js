@@ -4,7 +4,7 @@ import { registerBidder } from '../src/adapters/bidderFactory';
 import { BANNER } from '../src/mediaTypes';
 
 const BIDDER_CODE = 'audiencerun';
-const ENDPOINT_URL = 'http://localhost/adserverAudiencerun.php'; // '//d.audiencerun.com/prebid/';
+const ENDPOINT_URL = '//d.audiencerun.com/prebid';
 
 export const spec = {
   code: BIDDER_CODE,

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { spec } from 'modules/audiencerunBidAdapter';
 import { newBidder } from 'src/adapters/bidderFactory';
 
-const ENDPOINT = 'http://localhost/adserverAudiencerun.php';
+const ENDPOINT = '//d.audiencerun.com/prebid';
 
 const BID_SERVER_RESPONSE = {
   body: {
