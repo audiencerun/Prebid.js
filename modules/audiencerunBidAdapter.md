@@ -16,7 +16,13 @@ Use `audiencerun` as bidder.
 ```
     var adUnits = [{
       code: 'test-div',
-      sizes: [[300, 600]],
+      mediaTypes: {
+        banner: {
+          sizes: [
+                [300, 600]
+            ],
+        }
+      },
       bids: [{
           bidder: 'audiencerun',
           params: { 
@@ -24,8 +30,14 @@ Use `audiencerun` as bidder.
           }
       }]
     },{
-      code: 'test-div,
-      sizes: [[320, 50]],
+      code: 'test-div',
+      mediaTypes: {
+        banner: {
+          sizes: [
+                [320, 50]
+            ],
+        }
+      },
       bids: [{
           bidder: 'audiencerun',
           params: { 

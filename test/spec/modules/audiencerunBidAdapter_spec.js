@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { spec } from 'modules/audiencerunBidAdapter';
 import { newBidder } from 'src/adapters/bidderFactory';
 
-const ENDPOINT = '//d.audiencerun.com/prebid';
+const ENDPOINT = 'https://d.audiencerun.com/prebid';
 
 const BID_SERVER_RESPONSE = {
   body: {
@@ -97,6 +97,10 @@ describe('AudienceRun bid adapter tests', function() {
         gdprConsent: {
           consentString: 'BOZcQl_ObPFjWAeABAESCD-AAAAjx7_______9______9uz_Ov_v_f__33e8__9v_l_7_-___u_-33d4-_1vf99yfm1-7ftr3tp_87ues2_Xur__59__3z3_NohBgA',
           gdprApplies: true
+        },
+        refererInfo: {
+          canonicalUrl: 'https://example.com/canonical',
+          referer: 'https://example.com'
         }
       });
 

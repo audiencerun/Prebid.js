@@ -4,7 +4,7 @@ import { registerBidder } from '../src/adapters/bidderFactory';
 import { BANNER } from '../src/mediaTypes';
 
 const BIDDER_CODE = 'audiencerun';
-const ENDPOINT_URL = '//d.audiencerun.com/prebid';
+const ENDPOINT_URL = 'https://d.audiencerun.com/prebid';
 
 export const spec = {
   code: BIDDER_CODE,
@@ -49,7 +49,7 @@ export const spec = {
     });
 
     const payload = {
-      referer: utils.getTopWindowUrl(),
+      referer: bidderRequest.refererInfo ? bidderRequest.refererInfo.referer || null : null,
       currencyCode: config.getConfig('currency.adServerCurrency'),
       timeout: config.getConfig('bidderTimeout'),
       bids
