@@ -92,6 +92,7 @@ const BID2 = Object.assign({}, BID, {
   mediaType: 'banner',
   cpm: 1.52,
   source: 'server',
+  seatBidId: 'aaaa-bbbb-cccc-dddd',
   rubiconTargeting: {
     'rpfl_elemid': '/19968336/header-bid-tag1',
     'rpfl_14062': '2_tier0100'
@@ -222,13 +223,17 @@ const MOCK = {
         'transactionId': 'c116413c-9e3f-401a-bee1-d56aec29a1d4',
         'sizes': [[1000, 300], [970, 250], [728, 90]],
         'bidId': '3bd4ebb1c900e2',
+        'seatBidId': 'aaaa-bbbb-cccc-dddd',
         'bidderRequestId': '1be65d7958826a',
         'auctionId': '25c6d7f5-699a-4bfc-87c9-996f915341fa'
       }
     ],
     'auctionStart': 1519149536560,
     'timeout': 5000,
-    'start': 1519149562216
+    'start': 1519149562216,
+    'refererInfo': {
+      'referer': 'http://www.test.com/page.html', 'reachedTop': true, 'numIframes': 0, 'stack': ['http://www.test.com/page.html']
+    }
   },
   BID_RESPONSE: [
     BID,
@@ -354,7 +359,7 @@ const ANALYTICS_MESSAGE = {
           'bids': [
             {
               'bidder': 'rubicon',
-              'bidId': '3bd4ebb1c900e2',
+              'bidId': 'aaaa-bbbb-cccc-dddd',
               'status': 'success',
               'source': 'server',
               'clientLatencyMillis': 3214,
@@ -421,7 +426,7 @@ const ANALYTICS_MESSAGE = {
       'bidder': 'rubicon',
       'transactionId': 'c116413c-9e3f-401a-bee1-d56aec29a1d4',
       'adUnitCode': '/19968336/header-bid-tag1',
-      'bidId': '3bd4ebb1c900e2',
+      'bidId': 'aaaa-bbbb-cccc-dddd',
       'status': 'success',
       'source': 'server',
       'clientLatencyMillis': 3214,
@@ -484,8 +489,6 @@ describe('rubicon analytics adapter', function () {
     xhr.onCreate = request => requests.push(request);
 
     sandbox.stub(events, 'getEvents').returns([]);
-
-    sandbox.stub(utils, 'getTopWindowUrl').returns('http://www.test.com/page.html');
 
     clock = sandbox.useFakeTimers(1519767013781);
 
