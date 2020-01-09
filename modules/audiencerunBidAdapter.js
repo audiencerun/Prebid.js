@@ -71,7 +71,10 @@ export const spec = {
     return {
       method: 'POST',
       url: ENDPOINT_URL,
-      data: JSON.stringify(payload)
+      data: JSON.stringify(payload),
+      options: {
+        withCredentials: true
+      }
     };
   },
 
