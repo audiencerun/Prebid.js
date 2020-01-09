@@ -7,6 +7,7 @@ const BIDDER_CODE = 'audiencerun';
 const ENDPOINT_URL = 'https://d.audiencerun.com/prebid';
 
 export const spec = {
+  version: '1.0.0',
   code: BIDDER_CODE,
   supportedMediaTypes: [BANNER],
 
@@ -49,6 +50,7 @@ export const spec = {
     });
 
     const payload = {
+      libVersion: this.version,
       referer: bidderRequest.refererInfo ? bidderRequest.refererInfo.referer || null : null,
       currencyCode: config.getConfig('currency.adServerCurrency'),
       timeout: config.getConfig('bidderTimeout'),
@@ -71,7 +73,7 @@ export const spec = {
       url: ENDPOINT_URL,
       data: JSON.stringify(payload),
       options: {
-        withCredentials: false
+        withCredentials: true
       }
     };
   },

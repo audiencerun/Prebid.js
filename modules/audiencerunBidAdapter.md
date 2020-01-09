@@ -15,7 +15,7 @@ Use `audiencerun` as bidder.
 ## AdUnits configuration example
 ```
     var adUnits = [{
-      code: 'test-div',
+      code: 'ad-slot-300x600',
       mediaTypes: {
         banner: {
           sizes: [
@@ -26,22 +26,22 @@ Use `audiencerun` as bidder.
       bids: [{
           bidder: 'audiencerun',
           params: { 
-              zoneId: '5o3zc76yrf'
+              zoneId: 'xtov2mgij0'
           }
       }]
     },{
-      code: 'test-div',
+      code: 'ad-slot-728x90',
       mediaTypes: {
         banner: {
           sizes: [
-                [320, 50]
+                [728, 90]
             ],
         }
       },
       bids: [{
           bidder: 'audiencerun',
           params: { 
-              zoneId: 'rbq0i2nzig'
+              zoneId: 'u4q6z6u97b'
           }
       }]
     }];
