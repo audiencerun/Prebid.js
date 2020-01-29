@@ -18,7 +18,7 @@ const BID_SERVER_RESPONSE = {
         'h': 90,
         'isNet': false,
         'buying_type': 'rtb',
-        'syncUrl': 'https://ac.audiencerun.com/usersync.html',
+        'syncUrl': 'https://ac.audiencerun.com/f/sync.html',
         'adm': '<!-- test creative -->'
       }
     ]
@@ -198,7 +198,7 @@ describe('AudienceRun bid adapter tests', function() {
 
     it('should return user syncs', function () {
       const syncs = spec.getUserSyncs(syncOptions, serverResponses);
-      expect(syncs).to.deep.equal([{type: 'iframe', url: 'https://ac.audiencerun.com/usersync.html'}])
+      expect(syncs).to.deep.equal([{type: 'iframe', url: 'https://ac.audiencerun.com/f/sync.html'}])
     });
   });
 });
