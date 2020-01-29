@@ -123,19 +123,18 @@ export const spec = {
    */
   getUserSyncs: function(syncOptions, serverResponses) {
     if (!serverResponses || !serverResponses.length) return [];
+
     const syncs = [];
     serverResponses.forEach(response => {
       response.body.bid.forEach(bidObject => {
-        if (utils.isArray(bidObject.sync)) {
-          bidObject.sync.forEach(syncElement => {
-            if (syncs.indexOf(syncElement) === -1) {
-              syncs.push(syncElement);
-            }
-          });
-        }
+        syncs.push({
+          type: 'iframe',
+          url: bidObject.syncUrl
+        });
       });
     });
-    return syncs.map(sync => ({ type: 'image', url: sync }));
+
+    return syncs;
   }
 };
 
