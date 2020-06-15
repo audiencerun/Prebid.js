@@ -1,7 +1,7 @@
-import * as utils from '../src/utils';
-import { config } from '../src/config';
-import { registerBidder } from '../src/adapters/bidderFactory';
-import { BANNER } from '../src/mediaTypes';
+import * as utils from '../src/utils.js';
+import { config } from '../src/config.js';
+import { registerBidder } from '../src/adapters/bidderFactory.js';
+import { BANNER } from '../src/mediaTypes.js';
 
 const BIDDER_CODE = 'audiencerun';
 const ENDPOINT_URL = 'https://d.audiencerun.com/prebid';
@@ -30,11 +30,12 @@ export const spec = {
    * Make a server request from the list of BidRequests.
    *
    * @param {BidRequest[]} bidRequests A non-empty list of bid requests which should be sent to the Server.
-   * @return ServerRequest Info describing the request to the server.
+   * @param {*} bidderRequest
+   * @return {ServerRequest} Info describing the request to the server.
    */
   buildRequests: function(bidRequests, bidderRequest) {
     const bids = bidRequests.map(bid => {
-      const sizes = utils.deepAccess(bid, 'mediaTypes.banner.sizes') || [];
+      const sizes = utils.deepAccess(bid, 'mediaTypes.banner.sizes', []);
       return {
         zoneId: utils.getValue(bid.params, 'zoneId'),
         sizes: sizes.map(size => ({
