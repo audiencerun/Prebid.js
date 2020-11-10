@@ -4,7 +4,11 @@ import { registerBidder } from '../src/adapters/bidderFactory.js';
 import { BANNER } from '../src/mediaTypes.js';
 
 const BIDDER_CODE = 'audiencerun';
-const ENDPOINT_URL = 'https://d.audiencerun.com/prebid';
+const BASE_URL = 'https://d.audiencerun.com';
+const AUCTION_URL = `${BASE_URL}/prebid`;
+const TIMEOUT_EVENT_URL = `${BASE_URL}/ps/pbtimeout`;
+
+let requestedBids = [];
 
 export const spec = {
   version: '1.0.0',
@@ -33,50 +37,54 @@ export const spec = {
    * @param {*} bidderRequest
    * @return {ServerRequest} Info describing the request to the server.
    */
-  buildRequests: function(bidRequests, bidderRequest) {
-    const bids = bidRequests.map(bid => {
+  buildRequests: function (bidRequests, bidderRequest) {
+    const bids = bidRequests.map((bid) => {
       const sizes = utils.deepAccess(bid, 'mediaTypes.banner.sizes', []);
       return {
         zoneId: utils.getValue(bid.params, 'zoneId'),
-        sizes: sizes.map(size => ({
+        sizes: sizes.map((size) => ({
           w: size[0],
-          h: size[1]
+          h: size[1],
         })),
         bidfloor: bid.params.bidfloor || 0.0,
         bidId: bid.bidId,
         bidderRequestId: utils.getBidIdParameter('bidderRequestId', bid),
         adUnitCode: utils.getBidIdParameter('adUnitCode', bid),
         auctionId: utils.getBidIdParameter('auctionId', bid),
-        transactionId: utils.getBidIdParameter('transactionId', bid)
+        transactionId: utils.getBidIdParameter('transactionId', bid),
       };
     });
 
     const payload = {
       libVersion: this.version,
-      referer: bidderRequest.refererInfo ? bidderRequest.refererInfo.referer || null : null,
+      referer: bidderRequest.refererInfo
+        ? bidderRequest.refererInfo.referer || null
+        : null,
       currencyCode: config.getConfig('currency.adServerCurrency'),
       timeout: config.getConfig('bidderTimeout'),
-      bids
+      bids,
     };
 
     if (bidderRequest && bidderRequest.gdprConsent) {
       payload.gdpr = {
         consent: bidderRequest.gdprConsent.consentString,
-        applies: bidderRequest.gdprConsent.gdprApplies
+        applies: bidderRequest.gdprConsent.gdprApplies,
       };
     } else {
       payload.gdpr = {
-        consent: ''
-      }
+        consent: '',
+      };
     }
+
+    requestedBids = bids;
 
     return {
       method: 'POST',
-      url: ENDPOINT_URL,
+      url: AUCTION_URL,
       data: JSON.stringify(payload),
       options: {
-        withCredentials: true
-      }
+        withCredentials: true,
+      },
     };
   },
 
@@ -103,7 +111,9 @@ export const spec = {
       bid.adId = bidObject.zoneId;
       bid.cpm = parseFloat(bidObject.cpm);
       bid.creativeId = bidObject.crid;
-      bid.currency = bidObject.currency ? bidObject.currency.toUpperCase() : 'USD';
+      bid.currency = bidObject.currency
+        ? bidObject.currency.toUpperCase()
+        : 'USD';
 
       bid.height = bidObject.h;
       bid.width = bidObject.w;
@@ -122,21 +132,42 @@ export const spec = {
    * @param {ServerResponse[]} serverResponses List of server's responses.
    * @return {UserSync[]} The user syncs which should be dropped.
    */
-  getUserSyncs: function(syncOptions, serverResponses) {
+  getUserSyncs: function (syncOptions, serverResponses) {
     if (!serverResponses || !serverResponses.length) return [];
 
     const syncs = [];
-    serverResponses.forEach(response => {
-      response.body.bid.forEach(bidObject => {
+    serverResponses.forEach((response) => {
+      response.body.bid.forEach((bidObject) => {
         syncs.push({
           type: 'iframe',
-          url: bidObject.syncUrl
+          url: bidObject.syncUrl,
         });
       });
     });
 
     return syncs;
-  }
+  },
+
+  /**
+   * Register bidder specific code, which will execute if bidder timed out after an auction
+   *
+   * @param {Array} timeoutData timeout specific data
+   */
+  onTimeout: function (timeoutData) {
+    if (!utils.isArray(timeoutData)) {
+      return;
+    }
+
+    timeoutData.forEach((bid) => {
+      const bidOnTimeout = requestedBids.find((requestedBid) => requestedBid.bidId === bid.bidId);
+
+      if (bidOnTimeout) {
+        utils.triggerPixel(
+          `${TIMEOUT_EVENT_URL}/${bidOnTimeout.zoneId}/${bidOnTimeout.bidId}`
+        );
+      }
+    });
+  },
 };
 
 registerBidder(spec);
