@@ -25,7 +25,7 @@ function getPageUrl(bidderRequest) {
 }
 
 export const spec = {
-  version: '1.0.0',
+  version: '1.1.0',
   code: BIDDER_CODE,
   supportedMediaTypes: [BANNER],
 
