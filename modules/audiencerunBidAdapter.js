@@ -10,8 +10,22 @@ const TIMEOUT_EVENT_URL = `${BASE_URL}/ps/pbtimeout`;
 
 let requestedBids = [];
 
+/**
+ * Get bidder request referer
+ *
+ * @param {Object} bidderRequest
+ * @return {string}
+ */
+function getPageUrl(bidderRequest) {
+  return (
+    config.getConfig('pageUrl') ||
+    utils.deepAccess(bidderRequest, 'refererInfo.referer') ||
+    null
+  );
+}
+
 export const spec = {
-  version: '1.0.0',
+  version: '1.1.0',
   code: BIDDER_CODE,
   supportedMediaTypes: [BANNER],
 
@@ -57,9 +71,7 @@ export const spec = {
 
     const payload = {
       libVersion: this.version,
-      referer: bidderRequest.refererInfo
-        ? bidderRequest.refererInfo.referer || null
-        : null,
+      referer: getPageUrl(bidderRequest),
       currencyCode: config.getConfig('currency.adServerCurrency'),
       timeout: config.getConfig('bidderTimeout'),
       bids,
@@ -69,6 +81,7 @@ export const spec = {
       payload.gdpr = {
         consent: bidderRequest.gdprConsent.consentString,
         applies: bidderRequest.gdprConsent.gdprApplies,
+        version: bidderRequest.gdprConsent.apiVersion,
       };
     } else {
       payload.gdpr = {
