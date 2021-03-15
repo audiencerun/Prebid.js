@@ -121,7 +121,6 @@ export const spec = {
 
       // Common properties
       bid.requestId = bidObject.bidId;
-      bid.adId = bidObject.zoneId;
       bid.cpm = parseFloat(bidObject.cpm);
       bid.creativeId = bidObject.crid;
       bid.currency = bidObject.currency
